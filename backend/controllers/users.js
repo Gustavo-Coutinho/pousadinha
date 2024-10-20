@@ -12,14 +12,14 @@ const {
 const signUp = async (req, res, next) => {
   try {
     const { username, email, bio, image, password } = req.body.user;
-    if (!username) throw new FieldRequiredError(`A username`);
-    if (!email) throw new FieldRequiredError(`An email`);
-    if (!password) throw new FieldRequiredError(`A password`);
+    if (!username) throw new FieldRequiredError(`Um usuário`);
+    if (!email) throw new FieldRequiredError(`Um e-mail`);
+    if (!password) throw new FieldRequiredError(`Uma senha`);
 
     const userExists = await User.findOne({
       where: { email: req.body.user.email },
     });
-    if (userExists) throw new AlreadyTakenError("Email", "try logging in");
+    if (userExists) throw new AlreadyTakenError("Email", "Faça login");
 
     const newUser = await User.create({
       email: email,
@@ -43,10 +43,10 @@ const signIn = async (req, res, next) => {
     const { user } = req.body;
 
     const existentUser = await User.findOne({ where: { email: user.email } });
-    if (!existentUser) throw new NotFoundError("Email", "Criar conta first");
+    if (!existentUser) throw new NotFoundError("Email", "Criar conta primeiro");
 
     const pwd = await bcryptCompare(user.password, existentUser.password);
-    if (!pwd) throw new ValidationError("Wrong email/password combination");
+    if (!pwd) throw new ValidationError("E-mail ou senha incorretos");
 
     existentUser.dataValues.token = await jwtSign(user);
 
