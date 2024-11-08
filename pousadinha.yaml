@@ -1,0 +1,51 @@
+# arquivo docker-compose
+version: '3.8'
+services:
+  # Interface gráfica com React através do Vite
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - TZ=America/Sao_Paulo
+      - VITE_API_URL=http://backend:3001  # Aponta para o backend na rede-app
+    networks:
+      - ingress-internal
+  # API com NodeJS Express
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - PORT=3001
+      - JWT_KEY=${JWT_KEY}
+      - DEV_DB_USERNAME=${DEV_DB_USERNAME}
+      - DEV_DB_PASSWORD=${DEV_DB_PASSWORD}
+      - DEV_DB_NAME=${DEV_DB_NAME}
+      - DEV_DB_HOSTNAME=${DEV_DB_HOSTNAME}
+      - DEV_DB_DIALECT=${DEV_DB_DIALECT}
+      - PROD_DB_USERNAME=${PROD_DB_USERNAME}
+      - PROD_DB_PASSWORD=${PROD_DB_PASSWORD}
+      - PROD_DB_NAME=${PROD_DB_NAME}
+      - PROD_DB_HOSTNAME=${PROD_DB_HOSTNAME}
+      - PROD_DB_DIALECT=${PROD_DB_DIALECT}
+      - TZ=America/Sao_Paulo
+    networks:
+      - ingress-internal
+  # proxy-reverso com Nginx
+  nginx:
+    image: nginx:latest
+    container_name: reverse-proxy
+    environment:
+      - TZ=America/Sao_Paulo
+    ports:
+      - "443:443" # Expor a porta 443 para SSL
+    volumes:
+      - /home/ubuntu/pousadinha/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt/archive/pousadinha.duckdns.org-0001:/etc/nginx/certs:ro
+    networks:
+      - ingress-internal
+# Rede compartilhada entre backend, frontend e proxy reverso
+networks:
+  ingress-internal:
+    driver: bridge

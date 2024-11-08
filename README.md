@@ -2,7 +2,8 @@
 
 > **Aplicação com a stack: React / Vite + SWC / Express.js / Sequelize / PostgreSQL com CRUD, autenticação, padrões avançados, rotas, paginação, etc, que adere às especificações e API do [RealWorld](https://realworld.io/).**
 
-
+### Demonstração
+- Por tempo limitado, a aplicação está hospedada na nuvem e está disponível [nesse link](https://pousadinha.duckdns.org/)
 ---
 
 ## Começando
