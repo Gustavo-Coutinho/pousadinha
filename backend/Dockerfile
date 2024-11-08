@@ -9,11 +9,8 @@ RUN npm install --production
 # Copiar os arquivos do backend
 COPY . .
 
-# Configurar qual a porta da API
-ENV PORT=3001
-
 # Expor a porta da API
 EXPOSE 3001
 
-# Rodar o backend (API) em modo produção
-CMD ["npm", "run", "start"]
+# Criar banco de dados se ainda não existir e rodar o backend (API) em modo produção
+CMD ["sh", "-c", "npm run sqlz -- db:create && npm run start"]
